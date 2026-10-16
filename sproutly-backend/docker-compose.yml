@@ -1,0 +1,35 @@
+name: sproutly
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sproutly
+      POSTGRES_PASSWORD: sproutly
+      POSTGRES_DB: sproutly
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sproutly -d sproutly"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    profiles: ["full"]
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://sproutly:sproutly@postgres:5432/sproutly?schema=public
+      NODE_ENV: production
+    ports:
+      - "4000:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:
