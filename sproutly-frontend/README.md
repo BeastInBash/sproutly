@@ -1,56 +1,60 @@
-# Welcome to your Expo app 👋
+# Sproutly (app)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Expo SDK 57 · React Native 0.86 · TypeScript · Expo Router · Better Auth · TanStack Query · Bun
 
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Quick start
 
 ```bash
-npm run reset-project
+bun install
+# start the API first: cd ../sproutly-backend && bun run docker:db && bun run dev
+bun run start        # then press a (Android), i (iOS) or w (web), or scan the QR code with Expo Go
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+In development the app finds the backend at `http://<your-dev-machine-ip>:4000` automatically, so
+simulators and physical devices on the same Wi-Fi both work. To point it at another backend, copy `.env.example` to `.env` and set
+`EXPO_PUBLIC_API_URL`. **Release builds require `EXPO_PUBLIC_API_URL` to be set.**
 
-### Other setup steps
+## Scripts
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+| Script | Purpose |
+| --- | --- |
+| `start` / `android` / `ios` / `web` | Dev server |
+| `typecheck` / `lint` / `check` | `tsc`, ESLint (`eslint-config-expo`), both |
+| `doctor` | `expo-doctor` dependency/config checks |
 
-## Learn more
+Add packages with `bunx expo install <pkg>` so versions match the SDK.
 
-To learn more about developing your project with Expo, look at the following resources:
+## Layout
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```
+src/
+├── app/                  # Expo Router routes ONLY
+│   ├── _layout.tsx       #   fonts, providers, auth guards (Stack.Protected)
+│   ├── (auth)/           #   sign-in, sign-up (signed-out only)
+│   └── (app)/            #   signed-in stack: (tabs), settings, pot/[id] sheet
+│       └── (tabs)/       #   Today, My garden, Plant doctor, Grow guide (custom tab bar)
+├── screens/              # screen bodies rendered by routes
+├── components/           # design-system UI: text, icon, button, chip, plant-photo, terrace-map…
+├── data/                 # sample garden + guide data (replace with API queries)
+├── hooks/                # use-me (React Query)
+├── lib/                  # env, auth-client, api (fetch wrapper), query-client
+└── constants/theme.ts    # Sproutly tokens: palette, type, spacing, radius
+```
 
-## Join the community
+## Design
 
-Join our community of developers creating universal apps.
+`Sproutly-screen-design.md` is the only design source. Every color, font, radius and spacing value
+comes from `src/constants/theme.ts`. See `AGENTS.md` for the rules.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Auth & API
+
+- `lib/auth-client.ts`: Better Auth client with the Expo plugin. It stores the session in `expo-secure-store`
+  and uses the `sproutly://` scheme (configured in `app.json`).
+- `lib/api.ts`: `api<T>(path, opts)` calls `/api/v1/*` on the backend, sends the session cookie on
+  native, unwraps `{ success, data }`, and throws `ApiError` (`status`, `body.code`, `body.message`).
+- The root layout keeps the splash screen visible until the session is known, then shows either `(auth)` or `(app)`.
+
+## Builds
+
+Native modules used here (`expo-secure-store`, `expo-network`) are in Expo Go, so no dev build is needed yet.
+For store builds use EAS: `bunx eas-cli build`.

@@ -8,6 +8,16 @@ Expo ships breaking changes every SDK release. APIs you remember are likely rena
 2. Fetch the matching versioned docs: `https://docs.expo.dev/versions/v<major>.0.0/`
 3. For anything else, fetch https://docs.expo.dev/llms.txt — an index of all Expo docs with corrections to common LLM misconceptions. Follow its links to the specific page you need; never answer from memory.
 
+## Design: follow Sproutly-screen-design.md only
+
+`Sproutly-screen-design.md` is the only design source. Use its palette, type, shapes and copy rules exactly. Never invent colors, fonts or styles outside it.
+
+- Tokens live in `src/constants/theme.ts` (`colors`, `type`, `spacing`, `radius`, `touch`). Never hardcode hex values, font sizes or font families in screens or components.
+- Use `Text` (variants), `Icon` (lucide, 2px stroke), `Button` (pill), `Chip`, `PlantPhoto`, `Screen`, `SectionHeader` and `TerraceMap` from `src/components/`.
+- **Fonts override the design file:** Inter for headlines (`title`, `heading`, `subheading`, `display`) and Roboto for body, labels, buttons and inputs, at 16px or larger. Don't use Bricolage Grotesque or Atkinson Hyperlegible.
+- The app is light only, with flat fills: no shadows, no gradients. Radius is 28 for the hero, 16 for cards and rows, pill for chips and buttons. Side margins are 20px, touch targets 48px or larger, and copy is sentence case.
+- Button copy is the exact action ("Water now"), with no arrows and no middle dots. Tomato is for urgent states only, and Pollen is used sparingly.
+
 ## Commands
 
 Use `bunx` instead of `npx` if the project uses bun (`bun.lock` present).
