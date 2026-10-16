@@ -37,12 +37,9 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@commitlint/cli": "^21.2.3",
-    "@commitlint/config-conventional": "^21.2.3",
     "@types/react": "~19.2.2",
     "eslint": "^9",
     "eslint-config-expo": "~57.0.2",
-    "husky": "^9.1.7",
     "typescript": "~6.0.3"
   },
   "scripts": {
@@ -53,8 +50,7 @@
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
     "doctor": "expo-doctor",
-    "check": "bun run typecheck && bun run lint",
-    "prepare": "husky"
+    "check": "bun run typecheck && bun run lint"
   },
   "private": true
 }

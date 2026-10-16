@@ -18,8 +18,7 @@
     "db:studio": "bun --bun prisma studio",
     "db:reset": "bun --bun prisma migrate reset",
     "docker:db": "docker compose up -d postgres",
-    "postinstall": "bun --bun prisma generate",
-    "prepare": "husky"
+    "postinstall": "bun --bun prisma generate"
   },
   "dependencies": {
     "@better-auth/expo": "1.7.10",
@@ -38,15 +37,12 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",
-    "@commitlint/cli": "^21.2.3",
-    "@commitlint/config-conventional": "^21.2.3",
     "@types/bun": "latest",
     "@types/compression": "^1.8.1",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/pg": "^8.23.1",
     "@types/supertest": "^7.2.1",
-    "husky": "^9.1.7",
     "pino-pretty": "^13.2.0",
     "prisma": "7.10.1",
     "supertest": "^7.3.1",

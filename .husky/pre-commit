@@ -1,0 +1,9 @@
+# Typecheck and lint only the apps that have staged changes.
+staged=$(git diff --cached --name-only)
+
+for app in sproutly-frontend sproutly-backend; do
+  if echo "$staged" | grep -q "^$app/"; then
+    echo "Checking $app"
+    (cd "$app" && bun run typecheck && bun run lint) || exit 1
+  fi
+done
